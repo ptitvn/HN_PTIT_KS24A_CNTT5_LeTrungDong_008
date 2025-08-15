@@ -142,7 +142,6 @@ class Library {
         return member;
     }
 
-    // Generic method to find entity by id
     findEntityById<T extends { id?: number; memberId?: number }>(collection: T[], id: number): T | undefined {
         return collection.find(entity => 
             (typeof entity.id === "number" && entity.id === id) ||
