@@ -317,12 +317,27 @@ async function main() {
                 break;
             case 8:
                 // Thống kê số lượng từng loại tài liệu
+               
                 break;
             case 9:
                 // Cập nhật tiêu đề một tài liệu
+
                 break;
             case 10:
                 // Tìm kiếm thành viên hoặc tài liệu theo ID
+                const searchId = parseInt(await getUserInput("Nhập ID thành viên hoặc tài liệu: "));
+                const member = library.findEntityById(library.members, searchId);
+                const item = library.findEntityById(library.items, searchId);
+                if (member) {
+                    console.log(`Đã tìm thấy thành viên: ${member.getDetails()}`);
+                } else {
+                    console.log("Không tìm thấy thành viên.");
+                }
+                if (item) {
+                    console.log(`Đã tìm thấy tài liệu: ${item.getTitle()} (ID: ${item.id})`);
+                } else {
+                    console.log("Không tìm thấy tài liệu.");
+                }
                 break;
             case 11:
                 console.log("Thoát chương trình");
