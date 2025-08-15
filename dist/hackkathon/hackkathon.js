@@ -107,8 +107,8 @@ class Library {
             (typeof entity.memberId === "number" && entity.memberId === id));
     }
     borrowItem(memberId, itemId) {
-        const member = this.findEntityById(this.members, memberId);
-        const item = this.findEntityById(this.items, itemId);
+        const member = this.members.find(m => m.memberId === memberId);
+        const item = this.items.find(i => i.id === itemId);
         if (member && item && item.available) {
             item.borrowItem();
             const loan = new Loan(member, item);
@@ -132,27 +132,11 @@ class Library {
         return 0;
     }
     getBorrowedItemsByMember(memberId) {
-        const member = this.findEntityById(this.members, memberId);
+        const member = this.members.find(m => m.memberId === memberId);
         return member ? member.borrowedItems : [];
     }
     getAvailableItems() {
         return this.items.filter(item => item.available);
-    }
-    listMemberLoans(memberId) {
-        const member = this.findEntityById(this.members, memberId);
-        if (member) {
-            const borrowedItems = member.borrowedItems.filter(item => !item.available);
-            console.log(`Danh sách tài liệu đang mượn của thành viên ${memberId}:`);
-            borrowedItems.forEach(item => {
-                console.log(`- ${item.getTitle()}`);
-            });
-        }
-    }
-    calculateTotalLateFees() {
-        return this.loans.reduce((total, loan) => {
-            const daysOverdue = Math.max(0, Math.ceil((new Date().getTime() - loan.dueDate.getTime()) / (1000 * 60 * 60 * 24)));
-            return total + loan.item.calculateLateFee(daysOverdue);
-        }, 0);
     }
     getTotalLateFees() {
         return this.loans.reduce((total, loan) => {
