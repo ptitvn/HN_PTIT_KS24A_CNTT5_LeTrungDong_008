@@ -94,9 +94,6 @@ class Library {
         this.members = [];
         this.loans = [];
     }
-    getBorrowedItemsByMember(memberId) {
-        throw new Error("Method not implemented.");
-    }
     addItem(item) {
         this.items.push(item);
     }
@@ -133,6 +130,10 @@ class Library {
             }
         }
         return 0;
+    }
+    getBorrowedItemsByMember(memberId) {
+        const member = this.findEntityById(this.members, memberId);
+        return member ? member.borrowedItems : [];
     }
     getAvailableItems() {
         return this.items.filter(item => item.available);
@@ -256,14 +257,15 @@ async function main() {
                 // Hiển thị danh sách tài liệu đang mượn của một thành viên
                 const memberId = parseInt(await getUserInput("Nhập ID thành viên: "));
                 const borrowedItems = library.getBorrowedItemsByMember(memberId);
-                // if (borrowedItems.length > 0) {
-                //     console.log(`Danh sách tài liệu đang mượn của thành viên (ID: ${memberId}):`);
-                //     borrowedItems.forEach((item: { getTitle: () => any; id: any; }) => {
-                //         console.log(`- ${item.getTitle()} (ID: ${item.id})`);
-                //     });
-                // } else {
-                //     console.log("Thành viên này không mượn tài liệu nào.");
-                // }
+                if (borrowedItems.length > 0) {
+                    console.log(`Danh sách tài liệu đang mượn của thành viên ID ${memberId}:`);
+                    borrowedItems.forEach(item => {
+                        console.log(`- ${item.getTitle()} (ID: ${item.id})`);
+                    });
+                }
+                else {
+                    console.log("Thành viên này không mượn tài liệu nào.");
+                }
                 break;
             case 7:
                 // Tính và hiển thị tổng phí phạt đã thu
