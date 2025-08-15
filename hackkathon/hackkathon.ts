@@ -183,23 +183,7 @@ class Library {
     getAvailableItems(): LibraryItem[] {
         return this.items.filter(item => item.available);
     }
-    listMemberLoans(memberId: number): void {
-        const member = this.findEntityById(this.members, memberId) as Member | undefined;
-        if (member) {
-            const borrowedItems = member.borrowedItems.filter(item => !item.available);
-            console.log(`Danh sách tài liệu đang mượn của thành viên ${memberId}:`);
-            borrowedItems.forEach(item => {
-                console.log(`- ${item.getTitle()}`);
-                
-            });
-        }
-    }
-    calculateTotalLateFees(): number {
-        return this.loans.reduce((total, loan) => {
-            const daysOverdue = Math.max(0, Math.ceil((new Date().getTime() - loan.dueDate.getTime()) / (1000 * 60 * 60 * 24)));
-            return total + loan.item.calculateLateFee(daysOverdue);
-        }, 0);
-    }
+  
     getTotalLateFees(): number {
         return this.loans.reduce((total, loan) => {
             if (loan.isReturned) {
@@ -209,7 +193,6 @@ class Library {
             return total;
         }, 0);
     }
-
 
 }
 async function getUserInput(prompt: string): Promise<string> {
