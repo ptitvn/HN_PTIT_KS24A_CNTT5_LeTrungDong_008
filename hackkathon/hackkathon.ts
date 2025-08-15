@@ -149,22 +149,22 @@ class Library {
     }
     
     borrowItem(memberId: number, itemId: number): Loan | null {
-        const member = this.findEntityById(this.members, memberId) as Member | undefined;
-        const item = this.findEntityById(this.items, itemId) as LibraryItem | undefined;
+    const member = this.members.find(m => m.memberId === memberId);
+    const item = this.items.find(i => i.id === itemId);
 
-        if (member && item && item.available) {
-            item.borrowItem();
-            const loan = new Loan(member, item);
-            this.loans.push(loan);
-            member.borrowedItems.push(item);
-            return loan;
-        }
-        return null;
+    if (member && item && item.available) {
+        item.borrowItem();
+        const loan = new Loan(member, item);
+        this.loans.push(loan);
+        member.borrowedItems.push(item);
+        return loan;
     }
+    return null;
+}
     
-    returnItem(itemId: number): number {
-        const loanIndex = this.loans.findIndex(loan => loan.item.id === itemId && !loan.isReturned);
-        if (loanIndex !== -1) {
+ returnItem(itemId: number): number {
+    const loanIndex = this.loans.findIndex(loan => loan.item.id === itemId && !loan.isReturned);
+    if (loanIndex !== -1) {
         const loan = this.loans[loanIndex];
         if (loan) {
             loan.isReturned = true;
@@ -172,13 +172,13 @@ class Library {
             const daysOverdue = Math.max(0, Math.ceil((new Date().getTime() - loan.dueDate.getTime()) / (1000 * 60 * 60 * 24)));
             return loan.item.calculateLateFee(daysOverdue);
         }
-        }
-        return 0;
     }
-    getBorrowedItemsByMember(memberId: number): LibraryItem[] {
-        const member = this.findEntityById(this.members, memberId) as Member | undefined;
-        return member ? member.borrowedItems : [];
-    }
+    return 0;
+}
+getBorrowedItemsByMember(memberId: number): LibraryItem[] {
+    const member = this.members.find(m => m.memberId === memberId);
+    return member ? member.borrowedItems : [];
+}
 
     getAvailableItems(): LibraryItem[] {
         return this.items.filter(item => item.available);
